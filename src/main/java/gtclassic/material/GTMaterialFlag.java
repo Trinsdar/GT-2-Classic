@@ -8,7 +8,7 @@ public class GTMaterialFlag {
 			INGOT = new GTMaterialFlag("_ingot", 1, false), RUBY = new GTMaterialFlag("_gem", 2, false),
 			SAPPHIRE = new GTMaterialFlag("_gem", 3, false), FLUID = new GTMaterialFlag("", 13, true),
 			GAS = new GTMaterialFlag("", 13, true), BLOCK = new GTMaterialFlag("_block", 16, false),
-			GEMBLOCK = BLOCK = new GTMaterialFlag("_block", 17, false);
+			GEMBLOCK  = new GTMaterialFlag("_block", 17, false);
 	private static int LAST_INTERNAL_ID;
 	private int mask;
 	private String suffix;
