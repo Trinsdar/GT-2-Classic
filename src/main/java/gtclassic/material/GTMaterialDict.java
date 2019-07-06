@@ -7,7 +7,7 @@ public class GTMaterialDict {
 	public static void init() {
 		for (GTMaterial mat : GTMaterial.values()) {
 			// Iterating through resource blocks
-			if (mat.hasFlag(GTMaterialFlag.BLOCK)) {
+			if (mat.hasFlag(GTMaterialFlag.BLOCK) || mat.hasFlag(GTMaterialFlag.GEMBLOCK)) {
 				OreDictionary.registerOre("block" + mat.getDisplayName(), GTMaterialGen.getMaterialBlock(mat, 1));
 			}
 			// Regular dusts

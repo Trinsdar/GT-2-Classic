@@ -13,8 +13,9 @@ public class GTMaterial {
 	static GTMaterialFlag gemSapphire = GTMaterialFlag.SAPPHIRE;
 	static GTMaterialFlag ingot = GTMaterialFlag.INGOT;
 	static GTMaterialFlag block = GTMaterialFlag.BLOCK;
-	static GTMaterialFlag[] rubyAll = { dust, gemRuby, block };
-	static GTMaterialFlag[] sapphireAll = { dust, gemSapphire, block };
+	static GTMaterialFlag gemBlock = GTMaterialFlag.GEMBLOCK;
+	static GTMaterialFlag[] rubyAll = { dust, gemRuby, gemBlock };
+	static GTMaterialFlag[] sapphireAll = { dust, gemSapphire, gemBlock };
 	static GTMaterialFlag[] metalAll = { dust, ingot, block };
 	/** Master Material Map **/
 	private static HashMap<String, GTMaterial> generatedMap = new HashMap<>();

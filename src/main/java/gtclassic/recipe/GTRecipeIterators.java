@@ -40,7 +40,7 @@ public class GTRecipeIterators {
 			TileEntityCompressor.addRecipe(dust, 1, GTMaterialGen.getGem(mat, 1), 0.0F);
 			// Inverse
 			TileEntityMacerator.addRecipe(gem, 1, GTMaterialGen.getDust(mat, 1), 0.0F);
-			if (mat.hasFlag(GTMaterialFlag.BLOCK)) {
+			if (mat.hasFlag(GTMaterialFlag.GEMBLOCK)) {
 				// Block and gem related logic
 				recipes.addShapelessRecipe(GTMaterialGen.getGem(mat, 9), new Object[] { block });
 				TileEntityCompressor.addRecipe(gem, 9, GTMaterialGen.getMaterialBlock(mat, 1), 0.0F);

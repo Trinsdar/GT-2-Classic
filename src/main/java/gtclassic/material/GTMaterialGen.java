@@ -24,6 +24,11 @@ public class GTMaterialGen {
 			materialBlockUtil(mat, GTMaterialFlag.BLOCK);
 		}
 		for (GTMaterial mat : GTMaterial.values()) {
+			if (!mat.hasFlag(GTMaterialFlag.BLOCK)){
+				materialBlockUtil(mat, GTMaterialFlag.GEMBLOCK);
+			}
+		}
+		for (GTMaterial mat : GTMaterial.values()) {
 			materialItemUtil(mat, GTMaterialFlag.DUST);
 		}
 		for (GTMaterial mat : GTMaterial.values()) {
