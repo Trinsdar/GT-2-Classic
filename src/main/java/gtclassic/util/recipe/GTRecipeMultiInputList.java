@@ -14,6 +14,7 @@ import ic2.api.recipe.IRecipeInput;
 import ic2.core.block.machine.recipes.managers.RecipeManager;
 import ic2.core.util.helpers.ItemWithMeta;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.FluidStack;
 
 public class GTRecipeMultiInputList {
 
@@ -33,6 +34,46 @@ public class GTRecipeMultiInputList {
 	public GTRecipeMultiInputList(String category) {
 		this.category = category;
 		this.energy = 0;
+	}
+
+	public void addRecipe(List<IRecipeInput> inputs, FluidStack inputFluid, MachineOutput output, String id, int eu) {
+		id = getRecipeID(recipeMap.keySet(), id, 0);
+		if (recipeMap.containsKey(id) || !RecipeManager.register(category, id)) {
+			return;
+		}
+		if (inputFluid == null){
+			GTMod.logger.info("Recipe[" + id + "] has a invalid fluid input for machine " + category);
+			return;
+		}
+		for (int i = 0; i < inputs.size(); i++) {
+			if (inputs.get(i) != null && isListInvalid(inputs.get(i).getInputs())) {
+				GTMod.logger.info("Recipe[" + id + "] has a invalid input for machine " + category);
+				return;
+			}
+		}
+		if (isListInvalid(output.getAllOutputs())) {
+			GTMod.logger.info("Recipe[" + id + "] has a invalid output for machine " + category);
+			for (int i = 0; i < inputs.size(); i++) {
+				GTMod.logger.info("Recipe[" + id + ": " + inputs.get(i) + "] as input " + category);
+			}
+			return;
+		}
+		MultiRecipe recipe = new MultiRecipe(inputs, inputFluid, output, id, eu);
+		recipes.add(recipe);
+		recipeMap.put(id, recipe);
+		for (int i = 0; i < inputs.size(); i++) {
+			if (inputs.get(i) != null) {
+				for (ItemStack stack : inputs.get(i).getInputs()) {
+					ItemWithMeta meta = new ItemWithMeta(stack);
+					List<IRecipeInput> list = validInputs.get(meta);
+					if (list == null) {
+						list = new ArrayList<IRecipeInput>();
+						validInputs.put(meta, list);
+					}
+					list.add(inputs.get(i));
+				}
+			}
+		}
 	}
 
 	public void addRecipe(List<IRecipeInput> inputs, MachineOutput output, String id, int eu) {
@@ -166,7 +207,7 @@ public class GTRecipeMultiInputList {
 		return recipeMap.get(id);
 	}
 
-	private boolean isListInvalid(List<ItemStack> list) {
+	boolean isListInvalid(List<ItemStack> list) {
 		if (list.isEmpty()) {
 			return true;
 		}
@@ -181,15 +222,27 @@ public class GTRecipeMultiInputList {
 	public static class MultiRecipe {
 
 		List<IRecipeInput> inputs;
+		FluidStack inputFluid;
 		MachineOutput outputs;
 		String id;
 		int eu;
+		boolean fluidInput;
 
 		public MultiRecipe(List<IRecipeInput> inputs, MachineOutput outputs, String id, int eu) {
 			this.inputs = inputs;
 			this.outputs = outputs;
 			this.id = id;
 			this.eu = eu;
+			this.fluidInput = false;
+		}
+
+		public MultiRecipe(List<IRecipeInput> inputs, FluidStack inputFluid, MachineOutput outputs, String id, int eu) {
+			this.inputs = inputs;
+			this.inputFluid = inputFluid;
+			this.outputs = outputs;
+			this.id = id;
+			this.eu = eu;
+			this.fluidInput = true;
 		}
 
 		public String getRecipeID() {
@@ -211,11 +264,31 @@ public class GTRecipeMultiInputList {
 			return inputs.get(slot);
 		}
 
+		public FluidStack getInputFluid() {
+			return inputFluid;
+		}
+
+		public boolean isFluidInput() {
+			return fluidInput;
+		}
+
 		public boolean matches(int slot, ItemStack stack) {
 			if (inputs.size() <= slot || stack.isEmpty())
 				return false;
 			IRecipeInput input = inputs.get(slot);
 			return input.matches(stack) && input.getAmount() <= stack.getCount();
+		}
+
+		public boolean matches(FluidStack stack) {
+			if (stack == null)
+				return false;
+			return inputFluid.containsFluid(stack);
+		}
+
+		public boolean matchesIgnoringAmount(FluidStack stack) {
+			if (stack == null)
+				return false;
+			return inputFluid.getFluid() == stack.getFluid();
 		}
 
 		public boolean matchesIgnoringSize(int slot, ItemStack stack) {
