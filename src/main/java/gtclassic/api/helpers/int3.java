@@ -79,11 +79,19 @@ public class int3 {
 	}
 
 	public int3 left(int n) {
-		return offset(n, facing.rotateY());
+		try {
+			return offset(n, facing.rotateY());
+		} catch (IllegalStateException e){
+			return this;
+		}
 	}
 
 	public int3 right(int n) {
-		return offset(n, facing.rotateYCCW());
+		try {
+			return offset(n, facing.rotateYCCW());
+		} catch (IllegalStateException e){
+			return this;
+		}
 	}
 
 	public int3 forward(int n) {
