@@ -1,10 +1,5 @@
 package gtclassic.api.jei;
 
-import java.awt.Color;
-import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.Locale;
-
 import gtclassic.api.helpers.GTValues;
 import gtclassic.api.recipe.GTFluidMachineOutput;
 import gtclassic.api.recipe.GTRecipeMultiInputList.MultiRecipe;
@@ -21,9 +16,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.FluidStack;
 
+import java.awt.Color;
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Locale;
+
 public class GTJeiMultiRecipeWrapper implements IRecipeWrapper {
 
-	private MultiRecipe multiRecipe;
+	protected MultiRecipe multiRecipe;
 
 	public GTJeiMultiRecipeWrapper(MultiRecipe multiRecipe) {
 		this.multiRecipe = multiRecipe;
@@ -66,27 +66,11 @@ public class GTJeiMultiRecipeWrapper implements IRecipeWrapper {
 						* multiRecipe.getMachineEu())
 				+ " EU", 0, 80, Color.black.getRGB());
 		NBTTagCompound nbt = multiRecipe.getOutputs().getMetadata();
-		if (multiRecipe.getMachineEu() == 8192 && (getEntryTicks(multiRecipe.getOutputs()) > 3000 || (nbt.hasKey("startEu") && nbt.getInteger("startEu") != 0))) {
-			if (nbt.hasKey("startEu")){
-				int startEu = nbt.getInteger("startEu");
-				boolean helium = startEu == 40000000 || startEu == 60000000;
-				extraHeight = helium ? 20 : 10;
-				font.drawString("Start Eu: "
-						+ NumberFormat.getNumberInstance(Locale.US).format(startEu
-						* multiRecipe.getMachineEu())
-						+ " EU", 0, 90, Color.black.getRGB());
-				if (helium){
-					int generateEu = startEu == 40000000 ? 7649712 : 7929856;
-					font.drawString("Output: "
-							+ NumberFormat.getNumberInstance(Locale.US).format(generateEu)
-							+ " EU Out", 0, 90, Color.black.getRGB());
-				}
-			} else {
-				extraHeight = 10;
-				font.drawString("Output: "
-								+ NumberFormat.getNumberInstance(Locale.US).format(getEntryTicks(multiRecipe.getOutputs()) * 32000)
-								+ " EU Out", 0, 90, Color.black.getRGB());
-			}
+		if (multiRecipe.getMachineEu() == 8192 && getEntryTicks(multiRecipe.getOutputs()) > 3000) {
+			extraHeight = 10;
+			font.drawString("Output: "
+					+ NumberFormat.getNumberInstance(Locale.US).format(getEntryTicks(multiRecipe.getOutputs()) * 32000)
+					+ " EU Out", 0, 90, Color.black.getRGB());
 		}
 		if (GTConfig.general.debugMode) {
 			font.drawString("Recipe Id: " + multiRecipe.getRecipeID(), 0, 90 + extraHeight, Color.black.getRGB());
