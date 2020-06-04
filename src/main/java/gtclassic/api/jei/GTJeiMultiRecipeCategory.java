@@ -1,6 +1,7 @@
 package gtclassic.api.jei;
 
 import gtclassic.GTMod;
+import gtclassic.api.helpers.GTValues;
 import gtclassic.api.recipe.GTFluidMachineOutput;
 import gtclassic.common.GTConfig;
 import ic2.api.classic.recipe.crafting.RecipeInputFluid;
@@ -21,6 +22,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fml.common.Loader;
 
 public class GTJeiMultiRecipeCategory implements IRecipeCategory<GTJeiMultiRecipeWrapper> {
 
@@ -38,7 +40,7 @@ public class GTJeiMultiRecipeCategory implements IRecipeCategory<GTJeiMultiRecip
 	}
 
 	protected int getHeight() {
-		int baseHeight = this.name == "gt.fusion" ? 100 : 90;
+		int baseHeight = this.name.equals("gt.fusion") ? (Loader.isModLoaded(GTValues.MOD_ID_GTCX) ? 110 : 100) : 90;
 		int extraHeight = GTConfig.general.debugMode ? 10 : 0;
 		return baseHeight + extraHeight;
 	}

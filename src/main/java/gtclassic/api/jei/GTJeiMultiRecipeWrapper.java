@@ -18,6 +18,7 @@ import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.FluidStack;
 
 public class GTJeiMultiRecipeWrapper implements IRecipeWrapper {
@@ -64,11 +65,28 @@ public class GTJeiMultiRecipeWrapper implements IRecipeWrapper {
 				+ NumberFormat.getNumberInstance(Locale.US).format(getEntryTicks(multiRecipe.getOutputs())
 						* multiRecipe.getMachineEu())
 				+ " EU", 0, 80, Color.black.getRGB());
-		if (multiRecipe.getMachineEu() == 8192 && getEntryTicks(multiRecipe.getOutputs()) > 3000) {
-			extraHeight = 10;
-			font.drawString("Output: "
-					+ NumberFormat.getNumberInstance(Locale.US).format(getEntryTicks(multiRecipe.getOutputs()) * 32000)
-					+ " EU Out", 0, 90, Color.black.getRGB());
+		NBTTagCompound nbt = multiRecipe.getOutputs().getMetadata();
+		if (multiRecipe.getMachineEu() == 8192 && (getEntryTicks(multiRecipe.getOutputs()) > 3000 || (nbt.hasKey("startEu") && nbt.getInteger("startEu") != 0))) {
+			if (nbt.hasKey("startEu")){
+				int startEu = nbt.getInteger("startEu");
+				boolean helium = startEu == 40000000 || startEu == 60000000;
+				extraHeight = helium ? 20 : 10;
+				font.drawString("Start Eu: "
+						+ NumberFormat.getNumberInstance(Locale.US).format(startEu
+						* multiRecipe.getMachineEu())
+						+ " EU", 0, 90, Color.black.getRGB());
+				if (helium){
+					int generateEu = startEu == 40000000 ? 7649712 : 7929856;
+					font.drawString("Output: "
+							+ NumberFormat.getNumberInstance(Locale.US).format(generateEu)
+							+ " EU Out", 0, 90, Color.black.getRGB());
+				}
+			} else {
+				extraHeight = 10;
+				font.drawString("Output: "
+								+ NumberFormat.getNumberInstance(Locale.US).format(getEntryTicks(multiRecipe.getOutputs()) * 32000)
+								+ " EU Out", 0, 90, Color.black.getRGB());
+			}
 		}
 		if (GTConfig.general.debugMode) {
 			font.drawString("Recipe Id: " + multiRecipe.getRecipeID(), 0, 90 + extraHeight, Color.black.getRGB());
