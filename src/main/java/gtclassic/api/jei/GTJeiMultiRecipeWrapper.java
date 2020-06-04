@@ -1,5 +1,10 @@
 package gtclassic.api.jei;
 
+import java.awt.Color;
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Locale;
+
 import gtclassic.api.helpers.GTValues;
 import gtclassic.api.recipe.GTFluidMachineOutput;
 import gtclassic.api.recipe.GTRecipeMultiInputList.MultiRecipe;
@@ -13,13 +18,8 @@ import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.FluidStack;
 
-import java.awt.Color;
-import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.Locale;
 
 public class GTJeiMultiRecipeWrapper implements IRecipeWrapper {
 
@@ -65,7 +65,6 @@ public class GTJeiMultiRecipeWrapper implements IRecipeWrapper {
 				+ NumberFormat.getNumberInstance(Locale.US).format(getEntryTicks(multiRecipe.getOutputs())
 						* multiRecipe.getMachineEu())
 				+ " EU", 0, 80, Color.black.getRGB());
-		NBTTagCompound nbt = multiRecipe.getOutputs().getMetadata();
 		if (multiRecipe.getMachineEu() == 8192 && getEntryTicks(multiRecipe.getOutputs()) > 3000) {
 			extraHeight = 10;
 			font.drawString("Output: "
