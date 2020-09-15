@@ -1,8 +1,5 @@
 package gtclassic.common;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import gtclassic.api.material.GTMaterialGen;
 import gtclassic.common.item.GTItemCloakingDevice;
 import gtclassic.common.item.GTItemComponent;
@@ -36,6 +33,9 @@ import gtclassic.common.item.baubles.GTItemBaublesLithiumBattery;
 import ic2.core.IC2;
 import ic2.core.util.obj.plugins.IBaublesPlugin;
 import net.minecraft.item.Item;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GTItems {
 
@@ -90,10 +90,13 @@ public class GTItems {
 	public static GTItemSurvivalScanner portableScanner;
 	public static GTItemCreativeScanner debugScanner;
 
+	public static void initTube(){
+		testTube = createItem(new GTItemFluidTube());
+	}
+
 	public static void initItems() {
 		IBaublesPlugin plugin = IC2.loader.getPlugin("baubles", IBaublesPlugin.class);
 		boolean doBaubles = GTConfig.modcompat.compatBaubles && plugin != null;
-		testTube = createItem(new GTItemFluidTube());
 		heatStorageHelium1 = createItem(new GTItemReactorHeat("helium_single", 2, 60000));
 		heatStorageHelium3 = createItem(new GTItemReactorHeat("helium_triple", 3, 180000));
 		heatStorageHelium6 = createItem(new GTItemReactorHeat("helium_six", 4, 360000));
@@ -146,19 +149,12 @@ public class GTItems {
 	}
 
 	public static <T extends Item> T createItem(T item) {
-		toRegister.add(item);
-		return item;
+		return (T) IC2.getInstance().createItem(item);
 	}
 
 	public static void registerItems() {
-		IC2.getInstance().createItem(testTube);
 		for (Item item : GTMaterialGen.itemMap.values()) {
 			IC2.getInstance().createItem(item);
-		}
-		for (Item item : toRegister) {
-			if (item != testTube) {
-				IC2.getInstance().createItem(item);
-			}
 		}
 	}
 }

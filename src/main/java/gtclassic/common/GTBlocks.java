@@ -1,8 +1,5 @@
 package gtclassic.common;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import gtclassic.GTMod;
 import gtclassic.api.color.GTColorItemBlock;
 import gtclassic.api.interfaces.IGTColorBlock;
@@ -84,7 +81,6 @@ public class GTBlocks {
 		throw new IllegalStateException("Utility class");
 	}
 
-	static final List<Block> toRegister = new ArrayList<>();
 	public static final GTBlockBurnable brittleCharcoal = registerBlock(new GTBlockBurnable("brittlecharcoal", 0, 3200));
 	public static final GTBlockBurnable superFuel = registerBlock(new GTBlockBurnable("superfuel", 1, 100000));
 	public static final GTBlockBurnable superFuelMagic = registerBlock(new GTBlockBurnable("superfuelmagic", 1, 150000));
@@ -169,18 +165,14 @@ public class GTBlocks {
 		for (Block block : GTMaterialGen.blockMap.values()) {
 			createBlock(block);
 		}
-		for (Block block : toRegister) {
-			createBlock(block);
-		}
 	}
 
 	static <T extends Block> T registerBlock(T block) {
-		toRegister.add(block);
-		return block;
+		return createBlock(block);
 	}
 
-	public static void createBlock(Block block) {
-		IC2.getInstance().createBlock(block, getItemBlock(block));
+	public static <T extends Block> T createBlock(Block block) {
+		return (T) IC2.getInstance().createBlock(block, getItemBlock(block));
 	}
 
 	static Class<? extends ItemBlockRare> getItemBlock(Block block) {

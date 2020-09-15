@@ -83,8 +83,9 @@ public class GTMod {
 		GTMaterialGen.initFlags();
 		GTMaterialGen.init();
 		GTBlocks.registerBlocks();
-		GTItems.initItems();
+		GTItems.initTube();
 		GTItems.registerItems();
+		GTItems.initItems();
 		GTCrops.init();
 		GTOreDict.init();
 		MinecraftForge.EVENT_BUS.register(GTSounds.class);
