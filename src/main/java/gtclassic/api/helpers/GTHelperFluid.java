@@ -3,6 +3,7 @@ package gtclassic.api.helpers;
 import javax.annotation.Nullable;
 
 import gtclassic.api.fluid.GTFluidHandler;
+import gtclassic.api.material.GTMaterialGen;
 import ic2.core.block.base.tile.TileEntityMachine;
 import ic2.core.fluid.IC2Tank;
 import ic2.core.util.misc.FluidHelper;
@@ -62,22 +63,26 @@ public class GTHelperFluid {
 	 * Created by e99999, does clicking fluid filling/emptying logic for GTC Tiles
 	 **/
 	public static boolean doClickableFluidContainerThings(EntityPlayer player, EnumHand hand, World world, BlockPos pos,
-			IC2Tank tank) {
+			IFluidHandler tank) {
 		ItemStack playerStack = player.getHeldItem(hand);
 		if (!playerStack.isEmpty()) {
-			FluidActionResult result = FluidUtil.tryEmptyContainer(playerStack, tank, tank.getCapacity()
-					- tank.getFluidAmount(), player, true);
-			if (result.isSuccess()) {
-				playerStack.shrink(1);
-				ItemStack resultStack = result.getResult();
-				if (!resultStack.isEmpty()) {
-					if (!player.inventory.addItemStackToInventory(resultStack)) {
-						player.dropItem(resultStack, false);
+			FluidStack empty = tank.drain(Integer.MAX_VALUE, false);
+			int fill = empty == null ? tank.fill(GTMaterialGen.getFluidStack("water", Integer.MAX_VALUE), false) : tank.fill(new FluidStack(empty.getFluid(), Integer.MAX_VALUE), false);
+			if (fill > 0){
+				FluidActionResult result = FluidUtil.tryEmptyContainer(playerStack, tank, fill, player, true);
+				if (result.isSuccess()) {
+					playerStack.shrink(1);
+					ItemStack resultStack = result.getResult();
+					if (!resultStack.isEmpty()) {
+						if (!player.inventory.addItemStackToInventory(resultStack)) {
+							player.dropItem(resultStack, false);
+						}
 					}
+					return true;
 				}
-				return true;
 			}
-			FluidActionResult result2 = FluidUtil.tryFillContainer(playerStack, tank, tank.getCapacity(), player, true);
+
+			FluidActionResult result2 = FluidUtil.tryFillContainer(playerStack, tank, Integer.MAX_VALUE, player, true);
 			if (result2.isSuccess()) {
 				playerStack.shrink(1);
 				ItemStack resultStack = result2.getResult();
@@ -93,10 +98,10 @@ public class GTHelperFluid {
 	}
 
 	public static boolean doClickableFluidContainerFillThings(EntityPlayer player, EnumHand hand, World world,
-			BlockPos pos, IC2Tank tank) {
+			BlockPos pos, IFluidHandler tank) {
 		ItemStack playerStack = player.getHeldItem(hand);
 		if (!playerStack.isEmpty()) {
-			FluidActionResult result = FluidUtil.tryFillContainer(playerStack, tank, tank.getCapacity(), player, true);
+			FluidActionResult result = FluidUtil.tryFillContainer(playerStack, tank, Integer.MAX_VALUE, player, true);
 			if (result.isSuccess()) {
 				playerStack.shrink(1);
 				ItemStack resultStack = result.getResult();
@@ -112,20 +117,24 @@ public class GTHelperFluid {
 	}
 
 	public static boolean doClickableFluidContainerEmptyThings(EntityPlayer player, EnumHand hand, World world,
-			BlockPos pos, IC2Tank tank) {
+			BlockPos pos, IFluidHandler tank) {
 		ItemStack playerStack = player.getHeldItem(hand);
 		if (!playerStack.isEmpty()) {
-			FluidActionResult result = FluidUtil.tryEmptyContainer(playerStack, tank, tank.getCapacity()
-					- tank.getFluidAmount(), player, true);
-			if (result.isSuccess()) {
-				playerStack.shrink(1);
-				ItemStack resultStack = result.getResult();
-				if (!resultStack.isEmpty()) {
-					if (!player.inventory.addItemStackToInventory(resultStack)) {
-						player.dropItem(resultStack, false);
+			FluidStack empty = tank.drain(Integer.MAX_VALUE, false);
+			int fill = empty == null ? tank.fill(GTMaterialGen.getFluidStack("water", Integer.MAX_VALUE), false) : tank.fill(new FluidStack(empty.getFluid(), Integer.MAX_VALUE), false);
+			if (fill > 0) {
+				FluidActionResult result = FluidUtil.tryEmptyContainer(playerStack, tank, fill, player, true);
+				if (result.isSuccess()) {
+					playerStack.shrink(1);
+					ItemStack resultStack = result.getResult();
+					if (!resultStack.isEmpty()) {
+						if (!player.inventory.addItemStackToInventory(resultStack)) {
+							player.dropItem(resultStack, false);
+						}
 					}
+					return true;
+
 				}
-				return true;
 			}
 		}
 		return false;
